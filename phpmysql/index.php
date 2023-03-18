@@ -49,11 +49,12 @@ if(isset($_GET['id'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="night.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1><a href="index.php">WEB</a></h1>
-    <a href="author.php">author</a>
-    <input type="button" value="night" onClick="night()";/>
+        <div id="author"><a href="author.php">author</a></div>
+        <div id="button"><input type="button" value="night" onClick="night()";/></div>
     <ol>
         <?=$list?>
     </ol>
