@@ -1,5 +1,6 @@
 import './App.css';
 import {useState} from 'react';
+
 function Header(props){
     return <header>
         <h1><a href="App.js" onClick={event=>{
@@ -70,6 +71,11 @@ function Update(props){
     </article>    
 }
 
+// function DayNight() {
+//     return (
+//         <input id="DN" type="button" value="night" />
+//     );
+// }
 function App() {
     const [nextId,setNextId] = useState(3);
     const [id,setId] = useState(null);
@@ -143,13 +149,12 @@ function App() {
     }
 
 
-
-
   return (
     <div>
         <Header title="WEB" onChangeMode={()=>{
             setMode('welcome');
         }} />
+       
         <Nav list={topics} onChangeMode={id=>{
             setMode('read');
             setId(id);

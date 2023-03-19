@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.js"></script>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="dayNight"></div>
+    <div id="nav"></div>
+    <div id="article"></div>
+    <div id="control"></div>
+    <script>
+        function dayNight(){
+            document.querySelector('#dayNight').innerHTML=`
+                <input id="DN" type="button" value="night" onClick="
+                    if(document.querySelector('#DN').value === 'night'){
+                        document.querySelector('body').style.backgroundColor ='black';
+                        document.querySelector('body').style.color ='white';
+                        document.querySelector('#DN').value ='day';
+                        for(let i=0;i<document.querySelectorAll('a').length;i++){
+                            document.querySelectorAll('a')[i].style.color ='pink';
+                        }
+                    }else{
+                        document.querySelector('body').style.backgroundColor ='white';
+                        document.querySelector('body').style.color ='black';
+                        document.querySelector('#DN').value ='night';
+                        for(let i=0;i<document.querySelectorAll('a').length;i++){
+                            document.querySelectorAll('a')[i].style.color ='blue';
+                        }
+                    }
+                " />
+            `;
+        }
+
+        function header(){
+            document.querySelector('#header').innerHTML=`
+                <header>
+                    <h1><a href="#!web" onClick="
+                    event.preventDefault();
+                    store.dispatch({type:'WELCOME'});
+                    ">web</a></h1>
+                </header>
+            `;
+        }
+        function nav(){
+            let state = store.getState();
+            let lis = ``;
+            for(let i=0;i<state.contents.length;i++){
+                lis += `
+                    <li><a href="${state.contents[i].id}" onClick="
+                        event.preventDefault();
+                        store.dispatch({type:'SELECT',id:${state.contents[i].id}});
+                    ">${state.contents[i].title}</a></li>
+                `;
+            }
+            document.querySelector('#nav').innerHTML=`
+                <nav>
+                    <ol>
+                        ${lis}
+                    </ol> 
+                </nav>
+            `;
+        }
+        function article(){
+            let state = store.getState();
+            let title,desc;
+            for(let i=0;i<state.contents.length;i++){
+                if(state.contents[i].id === state.selected_id){
+                    title = state.contents[i].title;
+                    desc = state.contents[i].desc;
+                    break;
+                }
+            }
+            if(state.mode === 'create'){
+                document.querySelector('#article').innerHTML=`
+                <article>
+                    <h2>CREATE</h2>
+                    <form onsubmit="
+                        event.preventDefault();
+                        let title = this.title.value;
+                        let desc = this.desc.value;
+                        store.dispatch({type:'CREATE',title:title, desc:desc});
+                    ">
+                        <p><input type="text" name="title" placeholder="title" /></p>
+                        <p><textarea name="desc" placeholder="desc"></textarea></p>
+                        <p><input type="submit" value="create" /></p>
+                    </form>
+                </article>
+                `;
+            }else if(state.mode === 'read'){
+                document.querySelector('#article').innerHTML=`
+                <article>
+                    <h2>${title}</h2>
+                    <p>${desc}</p>
+                </article>
+                `;
+
+            }else if(state.mode === 'welcome'){
+                document.querySelector('#article').innerHTML=`
+                <article>
+                    <h2>welcome</h2>
+                    <p>hello world</p>
+                </article>
+                `;
+            }else if(state.mode === 'update'){
+                let title, desc;
+                for(let i=0;i<state.contents.length;i++){
+                    if(state.contents[i].id === state.selected_id){
+                        utitle = state.contents[i].title;
+                        udesc = state.contents[i].desc;
+                    }
+                }
+                document.querySelector('#article').innerHTML=`
+                <article>
+                    <h2>UPDATE</h2>
+                    <form onsubmit="
+                        event.preventDefault();
+                        let title = this.title.value;
+                        let desc = this.desc.value;
+                        store.dispatch({type:'UPDATE',title:title, desc:desc});
+                    ">
+                        <p><input type="text" name="title" placeholder="title" value="${utitle}" /></p>
+                        <p><textarea name="desc" placeholder="desc">${udesc}</textarea></p>
+                        <p><input type="submit" value="update" /></p>
+                    </form>
+                </article>
+                `;
+            }
+        }
+        function control(){
+            document.querySelector('#control').innerHTML=`
+                <control>
+                    <ul>
+                        <li><a href="./create" onClick="
+                            event.preventDefault();
+                            store.dispatch({type:'CHANGE_MODE',mode:'create'});
+                            ">create</a></li>
+                        <li><input type="button" value="delete" onClick="
+                            store.dispatch({type:'DELETE'});    
+                        " /></li>
+                        <li><a href="/update" onClick="
+                            event.preventDefault();
+                            store.dispatch({type:'UPDATE_MODE',mode:'update'});    
+                        ">update</a></li>
+                    </ul>
+                </control>
+            `;
+        }
+
+        
+        function reducer(state,action){
+            if(state === undefined){
+                return {
+                    maxId:2,
+                    mode:'welcome',
+                    selected_id:null,
+                    contents: [
+                        {id:1, title:'html', desc:'html is ...'},
+                        {id:2, title:'css', desc:'css is ...'}
+                    ]
+                }
+            }
+
+
+            let newState;
+            if(action.type === 'SELECT'){
+                newState = Object.assign({},state,{selected_id:action.id, mode:'read'});
+            }else if(action.type === 'CHANGE_MODE'){
+                newState = Object.assign({},state,{mode:action.mode});
+            }else if(action.type === 'CREATE'){
+                let newMaxId = state.maxId+1;
+                let newContents = state.contents.concat();
+                newContents.push({id:newMaxId,title:action.title, desc:action.desc});
+                newState = Object.assign({},state,{
+                    contents:newContents,
+                    maxId:newMaxId,
+                    mode:'read',
+                    selected_id:newMaxId
+                
+                });
+                
+            }else if(action.type === 'DELETE'){
+                let newContents = [];
+                for(let i=0;i<state.contents.length;i++){
+                    if(state.contents[i].id !== state.selected_id){
+                        newContents.push(state.contents[i]);
+                    }
+                }
+                newState = Object.assign({},state,{
+                    contents:newContents,
+                    mode:'welcome'
+                });
+            }else if(action.type === 'UPDATE_MODE'){
+                newState = Object.assign({},state,{mode:action.mode});
+            }else if(action.type === 'UPDATE'){
+                let newContent = {id:state.selected_id,title:action.title, desc:action.desc};
+                let newContents = state.contents.concat();
+                for(let i=0;i<newContents.length;i++){
+                    if(newContents[i].id === state.selected_id){
+                        newContents[i] = newContent;
+                        break;
+                    }
+                }
+
+                newState = Object.assign({},state,{
+                    contents:newContents,
+                    mode:'read'
+                });
+            }else if(action.type === 'WELCOME'){
+                newState = Object.assign({},state,{mode:'welcome'});
+            }
+
+
+            console.log(action,state,newState);
+            return newState;
+        }
+        
+        const store = Redux.createStore(reducer);
+        
+        //back call
+        store.subscribe(article);
+        store.subscribe(nav);
+
+        //function call
+        header();
+        nav();
+        article();
+        control();
+        dayNight();
+
+        
+    </script>
+
+</body>
+</html>
