@@ -7,5 +7,3 @@ export default function DayNight(){
         document.querySelector('body').style.color="black";
     }
 }
-
-<input type="button" value="night" />
