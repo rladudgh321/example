@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="fetchPage.js"></script>
+</head>
+<body>
+    <h1>web</h1>
+    <ol>
+        <nav></nav>
+    </ol>
+    <article></article>
+    <script>
+        fetch('list').then(function(response){
+            response.text().then(function(text){
+                let item = text.split(',');
+                let tag = '';
+                for(let i=0;i<item.length;i++){
+                    tag += '<li><a href="#!'+item[i]+'" onClick="fetchPage(\''+item[i]+'\');">'+item[i]+'</a></li>';
+                }
+                console.log(tag);
+                document.querySelector('nav').innerHTML=tag;
+            });
+        });
+
+        if(location.hash){
+            fetchPage(location.hash.substr(2));
+        }else{
+            fetchPage('welcome');
+        }
+    </script>
+</body>
+</html>
