@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 function App() {
   return (
@@ -10,10 +10,20 @@ function App() {
     </div>
   );
 }
-
+let funcStyle ='color:blue';
+let funcId =0;
 function FuncComp(props){
+
   const [number,setNumber] = useState(props.initNumber);
   const [_date, setDate] = useState((new Date()).toString());
+
+  useEffect(()=>{
+    console.log('%cfunc=>useEffect number'+(++funcId),funcStyle);
+    return function(){
+      console.log('%cfunc=>useEffect number return'+(++funcId), funcStyle);
+    }
+  },[number]);
+  console.log('%cfunc=>render'+(++funcId),funcStyle);
   return (
     <div className="container">
       <h2>function style component</h2>
@@ -36,6 +46,16 @@ class ClassComp extends React.Component{
   }
   componentDidMount(){
     console.log('%cclass=>componentDidMount',classStyle);
+  }
+  shouldComponentUpdate(nextProps,nextState){
+    console.log('%cclass=>shouldComponentUpdate',classStyle);
+    return true;
+  }
+  componentDidUpdate(nextProps,nextState){
+    console.log('%cclass=>componentDidUpdate',classStyle);
+  }
+  componentWillUnmount(nextProps,nextState){
+    console.log('%cclass=>componentWillUnmount',classStyle);
   }
   state ={
     number:this.props.initNumber,
