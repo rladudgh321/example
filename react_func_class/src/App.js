@@ -2,11 +2,27 @@ import './App.css';
 import React, {useState, useEffect} from 'react';
 
 function App() {
+  const [funcShow,setFuncShow] = useState(true);
+  const [classShow,setClassShow] = useState(true);
   return (
     <div className="container">
       <h1>hello world</h1>
-        <FuncComp initNumber={'랜덤숫자 만들기'}></FuncComp>
-        <ClassComp initNumber={'랜덤숫자 만들기'}></ClassComp>
+        {funcShow ? <FuncComp initNumber={'랜덤숫자 만들기'}></FuncComp> : false}
+        <input type="button" value="function Style toggle key" onClick={()=>{
+          if(funcShow === true){
+          setFuncShow(false);
+          }else {
+          setFuncShow(true);
+          }
+        }} />
+        {classShow ? <ClassComp initNumber={'랜덤숫자 만들기'}></ClassComp> :false }
+        <input type="button" value="class Style toggle key" onClick={()=>{
+          if(classShow === true){
+            setClassShow(false);
+          }else {
+            setClassShow(true);
+          }
+        }} />
     </div>
   );
 }
