@@ -1,17 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
-import {useState} from 'react';
+import { createStore } from 'redux';
+import {Provider, useSelector, useDispatch, connect} from 'react-redux';
+
+function reducer(currentState, action){
+  if(currentState === undefined){
+    return {
+      number:1
+    }
+  }
+
+  //newState 불변성 유지
+  const newState = {... currentState};
+  if(action.type ='PLUS'){
+    newState.number++;
+  }  
+  console.log(action,currentState,newState);
+  return newState;
+}
+
+const store = createStore(reducer);
 
 function App() {
-  const [number,setNumber] = useState(1);
+  const number = 2;
   return (
     <div className="App">
       <h1>Root: {number}</h1>
       <div id="container">
-        <Left1 number={number} />
-        <Right1 onIncrese={()=>{
-        setNumber(number+1);
-      }}/>
+        <Provider store={store}>
+          <Left1 number={number} />
+          <Right1 />
+        </Provider>
       </div>
     </div>
   );
@@ -34,10 +52,11 @@ function Left2(props){
   );
 }
 
-function Left3(props){
+function Left3(){
+  const number = useSelector(state=>state.number);
   return (
     <div>
-      <h2>Left3 :{props.number}</h2>
+      <h2>Left3 :{number}</h2>
     </div>
   );
 }
@@ -46,9 +65,7 @@ function  Right1(props){
   return (
     <div>
       <h2>Right1</h2>
-      <Right2 onIncrese={()=>{
-        props.onIncrese();
-      }}/>
+      <Right2 />
     </div>
   );
 }
@@ -57,19 +74,18 @@ function  Right2(props){
   return (
     <div>
       <h2>Right2</h2>
-      <Right3 onIncrese={()=>{
-        props.onIncrese();
-      }} />
+      <Right3 />
     </div>
   );
 }
 
 function  Right3(props){
-  return (
+  const dispatch = useDispatch();
+  return ( 
     <div>
       <h2>Right3</h2>
-      <input type="button" value="+" onClick ={()=>{
-        props.onIncrese();
+      <input type="button" value="+" onClick={()=>{
+        dispatch({type:'PLUS'});
       }} />
     </div>
   );
