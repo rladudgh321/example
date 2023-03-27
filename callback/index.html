@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let words = ['spray', 'limit', 'elite', 'exuberant', 'desctruction', 'present'];
+        
+        function myfilter(origin, callback){
+            let array = [];
+            for(let i=0;i<origin.legnth;i++){
+                if(callback(origin[i])){
+                    array.push(origin[i]);
+                }
+            }
+            return array;
+        }
+
+        let result = myfilter(words, element=>element.length>5);
+        // array 배열[]에 두번째인자 조건식에 따라 callback 함수가 동작
+        console.log(result);
+
+
+
+
+        ////////////////////////////////////////////
+        /////////////////////////
+        //callback함수가 없이 작성하면 어떤일이 생길까?
+        let words2 = ['spray', 'limit', 'elite', 'exuberant', 'desctruction', 'present'];
+        
+        function myfilter(origin){
+            let array = [];
+            for(let i=0;i<origin.legnth;i++){
+                if(origin[i]){
+                    array.push(origin[i]);
+                }
+            }
+            return array;
+        }
+
+        let result2 = myfilter(words2);
+        // 조건에 따라 넣는 것이 아닌, words2의 전체 인덱스를 나열한다
+        console.log(result2);
+
+        //////////////////////////////////
+        /////////////////////////////////
+        ////////////////////////////////
+        ///정리//
+        // callback함수는 조건식을 넣는 용도로 쓰일수가 있다
+        //네트워크 통신을 하거나       
+        // 사용자의 어떤 동작을 이벤트 프로그래밍 한다거나 할때 callback함수가 광범위하게 사용된다                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+
+    </script>
+</body>
+</html>

@@ -81,8 +81,8 @@
                     <h2>CREATE</h2>
                     <form onsubmit="
                         event.preventDefault();
-                        let title = this.title.value;
-                        let desc = this.desc.value;
+                        let title = event.target.title.value;
+                        let desc = event.target.desc.value;
                         store.dispatch({type:'CREATE',title:title, desc:desc});
                     ">
                         <p><input type="text" name="title" placeholder="title" /></p>

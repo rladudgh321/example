@@ -1,32 +1,38 @@
+import logo from './logo.svg';
 import './App.css';
-import { createStore } from 'redux';
+import {createStore} from 'redux';
 import {Provider, useSelector, useDispatch, connect} from 'react-redux';
 
-function reducer(currentState, action){
-  if(currentState === undefined){
-    return {
-      number:1
+function App() {
+  function reducer(currentState, action){
+    if(currentState === undefined){
+      return {
+        topics: {id:1, title:'html', desc: 'html is ...'},
+        _number_ :1
+      }
     }
+
+    //불변성유지
+    let newState;
+    if(action.type === 'PLUS'){
+      let plusnum = currentState._number_ + 1;
+      newState = Object.assign({},currentState,{_number_: plusnum});
+    }    
+
+    console.log(action, currentState, newState);
+    return newState;
   }
 
-  //newState 불변성 유지
-  const newState = {... currentState};
-  if(action.type ='PLUS'){
-    newState.number++;
-  }  
-  console.log(action,currentState,newState);
-  return newState;
-}
 
-const store = createStore(reducer);
 
-function App() {
-  const number = 2;
+  const store = createStore(reducer);
+
+  const number = 1;
   return (
     <div className="App">
       <h1>Root: {number}</h1>
       <div id="container">
-        <Provider store={store}>
+        <Provider store = {store}>
           <Left1 number={number} />
           <Right1 />
         </Provider>
@@ -52,11 +58,13 @@ function Left2(props){
   );
 }
 
-function Left3(){
-  const number = useSelector(state=>state.number);
+function Left3(props){
+  const id = useSelector(state=>state._number_);
+  // const title = useSelector(state=>state.topics.title);
+  // const desc = useSelector(state=>state.topics.desc);
   return (
     <div>
-      <h2>Left3 :{number}</h2>
+      <h2>Left3 : {id}</h2>
     </div>
   );
 }
@@ -80,12 +88,13 @@ function  Right2(props){
 }
 
 function  Right3(props){
+  let id = useSelector(state=>state._number_);
   const dispatch = useDispatch();
-  return ( 
+  return (
     <div>
       <h2>Right3</h2>
-      <input type="button" value="+" onClick={()=>{
-        dispatch({type:'PLUS'});
+      <input type="button" value="+" onClick ={()=>{
+        dispatch({type:'PLUS', plus: id++});
       }} />
     </div>
   );
